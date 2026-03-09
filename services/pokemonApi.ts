@@ -1,20 +1,17 @@
-// src/services/pokemonApi.ts
-type PokemonResult = {
-  name: string;
-  image: string;
-  types: string[];
-  abilities: string[];
-  moves: string[];
-};
+// services/pokemonApi.ts
 
-export async function fetchPokemonByName(nameRaw: string): Promise<PokemonResult> {
+import type { Pokemon } from "../models/Pokemon";
+
+export async function fetchPokemonByName(nameRaw: string): Promise<Pokemon> {
   const name = nameRaw.trim().toLowerCase();
 
   if (!name) {
     throw new Error("Please enter a Pokémon name.");
   }
 
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  const response = await fetch(
+    `https://pokeapi.co/api/v2/pokemon/${name}`
+  );
 
   if (!response.ok) {
     throw new Error(`Pokémon not found (HTTP ${response.status})`);
@@ -22,20 +19,17 @@ export async function fetchPokemonByName(nameRaw: string): Promise<PokemonResult
 
   const data = await response.json();
 
-  const types =
-    Array.isArray(data?.types)
-      ? data.types.map((t: any) => t?.type?.name).filter(Boolean)
-      : [];
+  const types = Array.isArray(data?.types)
+    ? data.types.map((t: any) => t?.type?.name).filter(Boolean)
+    : [];
 
-  const abilities =
-    Array.isArray(data?.abilities)
-      ? data.abilities.map((a: any) => a?.ability?.name).filter(Boolean)
-      : [];
+  const abilities = Array.isArray(data?.abilities)
+    ? data.abilities.map((a: any) => a?.ability?.name).filter(Boolean)
+    : [];
 
-  const movesAll =
-    Array.isArray(data?.moves)
-      ? data.moves.map((m: any) => m?.move?.name).filter(Boolean)
-      : [];
+  const movesAll = Array.isArray(data?.moves)
+    ? data.moves.map((m: any) => m?.move?.name).filter(Boolean)
+    : [];
 
   return {
     name: data?.name ?? name,

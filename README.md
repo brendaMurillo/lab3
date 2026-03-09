@@ -29,5 +29,5 @@ Checkpoint 5
     somewhere in between then pokemon is not found. 
 
 Checkpoint 6
-    1. 
-    2. 
+    1. A model gives a structure for data
+    2. its safer due to the structure, allowing for consistancy
