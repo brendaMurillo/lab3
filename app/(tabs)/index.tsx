@@ -7,27 +7,30 @@ export default function HomeScreen() {
   async function handleSearch() {
     const q = pokemonName.trim().toLowerCase();
 
-    // 1) Validate input
+    // Validate input
     if (!q) {
       console.log("Please enter a Pokémon name.");
       return;
     }
 
     try {
-      // 2) Call PokéAPI
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${q}`);
+      // Call PokéAPI
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${q}`
+      );
 
-      // 3) Controlled failure for non-200
+      // fetch does NOT throw on 404 — we must check manually
       if (!response.ok) {
         console.log(`Pokémon not found (HTTP ${response.status})`);
         return;
       }
 
-      // 4) Parse JSON
+      // Parse JSON
       const data = await response.json();
 
-      // 5) Log full JSON response
+      // Log full JSON
       console.log("Full JSON response:", data);
+
     } catch (error) {
       console.log("Network error:", error);
     }
