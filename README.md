@@ -20,8 +20,14 @@ Checkpoint 4
         2. fetching
         3. display
     2. I would fetch from a separate file and access it from that file 
-    3. Look over the code to ensure parsing isint isolated, and I would make sure the program runs normally
+    3. Look over the code to ensure parsing isint isolated, and I would make sure the program runs
+    normally
 
 Checkpoint 5
+    1. Its a win because noe its reusable since its independant
+    2. The function takes a name input then displays a pokemon as the output. If theres an error 
+    somewhere in between then pokemon is not found. 
+
+Checkpoint 6
     1. 
     2. 

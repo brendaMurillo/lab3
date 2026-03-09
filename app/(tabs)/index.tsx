@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { fetchPokemonByName } from "../../services/pokemonApi";
 
 type PokemonResult = {
   name: string;
@@ -17,60 +18,15 @@ export default function HomeScreen() {
   const [pokemon, setPokemon] = useState<PokemonResult | null>(null);
 
   async function handleSearch() {
-    const q = pokemonName.trim().toLowerCase();
-
-    if (!q) {
-      setError("Please enter a Pokémon name.");
-      return;
-    }
-
     setLoading(true);
     setError("");
     setPokemon(null);
 
     try {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${q}`);
-
-      if (!response.ok) {
-        setError(`Pokémon not found (HTTP ${response.status})`);
-        return;
-      }
-
-      const data = await response.json();
-
-      const types =
-        Array.isArray(data?.types)
-          ? data.types
-              .map((t: any) => t?.type?.name)
-              .filter(Boolean)
-          : [];
-
-      const abilities =
-        Array.isArray(data?.abilities)
-          ? data.abilities
-              .map((a: any) => a?.ability?.name)
-              .filter(Boolean)
-          : [];
-
-      const movesAll =
-        Array.isArray(data?.moves)
-          ? data.moves
-              .map((m: any) => m?.move?.name)
-              .filter(Boolean)
-          : [];
-
-      const result: PokemonResult = {
-        name: data?.name ?? q,
-        image: data?.sprites?.front_default ?? "",
-        types,
-        abilities,
-        moves: movesAll.slice(0, 5),
-      };
-
+      const result = await fetchPokemonByName(pokemonName);
       setPokemon(result);
-    } catch (e) {
-      setError("Network error. Please try again.");
-      console.log("Network error:", e);
+    } catch (e: any) {
+      setError(e?.message ?? "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -92,7 +48,6 @@ export default function HomeScreen() {
       <Button title="Get Pokemon" onPress={handleSearch} />
 
       {loading && <Text style={styles.info}>Loading...</Text>}
-
       {!!error && <Text style={styles.error}>{error}</Text>}
 
       {pokemon && (
