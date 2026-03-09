@@ -39,3 +39,19 @@ Checkpoint 7
 Checkpoint 8
     1. The controller validates the input and then calls and loads the pokemon. 
     2. The view should only focus on UI
+
+Checkpoint 9
+    1. It needs input value, input change, search action, and the displayed state
+    2. It would mix UI and business logic, making the view harder to reuse
+
+Checkpoint 10
+    1. 
+    2. 
+
+Checkpoint 11
+    1. 
+    2. 
+
+Checkpoint 9
+    1. 
+    2. 
