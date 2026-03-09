@@ -1,38 +1,55 @@
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
+type PokemonResult = {
+  name: string;
+  image: string;
+};
+
 export default function HomeScreen() {
   const [pokemonName, setPokemonName] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [pokemon, setPokemon] = useState<PokemonResult | null>(null);
 
   async function handleSearch() {
     const q = pokemonName.trim().toLowerCase();
 
-    // Validate input
+    // validate
     if (!q) {
-      console.log("Please enter a Pokémon name.");
+      setError("Please enter a Pokémon name.");
       return;
     }
 
-    try {
-      // Call PokéAPI
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/{name}`
-      );
+    // start new search: reset state
+    setLoading(true);
+    setError("");
+    setPokemon(null);
 
-      // fetch does NOT throw on 404 — we must check manually
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${q}`);
+
       if (!response.ok) {
-        console.log(`Pokémon not found (HTTP ${response.status})`);
+        setError(`Pokémon not found (HTTP ${response.status})`);
         return;
       }
 
-      // Parse JSON
       const data = await response.json();
-
-      // Log full JSON
       console.log("Full JSON response:", data);
 
-    } catch (error) {
-      console.log("Network error:", error);
+      // minimal shaped object for checkpoint 2
+      const result: PokemonResult = {
+        name: data?.name ?? q,
+        image: data?.sprites?.front_default ?? "",
+      };
+
+      setPokemon(result);
+    } catch (e) {
+      setError("Network error. Please try again.");
+      console.log("Network error:", e);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -50,6 +67,16 @@ export default function HomeScreen() {
       />
 
       <Button title="Get Pokemon" onPress={handleSearch} />
+
+      {loading && <Text style={styles.info}>Loading...</Text>}
+
+      {!!error && <Text style={styles.error}>{error}</Text>}
+
+      {pokemon && (
+        <Text style={styles.info}>
+          Loaded: {pokemon.name} {pokemon.image ? "✅" : ""}
+        </Text>
+      )}
     </View>
   );
 }
@@ -73,5 +100,13 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
+  },
+  info: {
+    marginTop: 8,
+  },
+  error: {
+    marginTop: 8,
+    color: "crimson",
+    fontWeight: "600",
   },
 });
