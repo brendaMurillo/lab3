@@ -1,6 +1,6 @@
 // services/pokemonApi.ts
-
 import type { Pokemon } from "../models/Pokemon";
+import { PokemonBuilder } from "../models/PokemonBuilder";
 
 export async function fetchPokemonByName(nameRaw: string): Promise<Pokemon> {
   const name = nameRaw.trim().toLowerCase();
@@ -9,9 +9,7 @@ export async function fetchPokemonByName(nameRaw: string): Promise<Pokemon> {
     throw new Error("Please enter a Pokémon name.");
   }
 
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/${name}`
-  );
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
   if (!response.ok) {
     throw new Error(`Pokémon not found (HTTP ${response.status})`);
@@ -31,11 +29,13 @@ export async function fetchPokemonByName(nameRaw: string): Promise<Pokemon> {
     ? data.moves.map((m: any) => m?.move?.name).filter(Boolean)
     : [];
 
-  return {
-    name: data?.name ?? name,
-    image: data?.sprites?.front_default ?? "",
-    types,
-    abilities,
-    moves: movesAll.slice(0, 5),
-  };
+  const pokemon = new PokemonBuilder()
+    .setName(data?.name ?? name)
+    .setImage(data?.sprites?.front_default ?? "")
+    .setTypes(types)
+    .setAbilities(abilities)
+    .setMoves(movesAll.slice(0, 5))
+    .build();
+
+  return pokemon;
 }

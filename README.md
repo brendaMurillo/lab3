@@ -31,3 +31,11 @@ Checkpoint 5
 Checkpoint 6
     1. A model gives a structure for data
     2. its safer due to the structure, allowing for consistancy
+
+Checkpoint 7
+    1. A builder pattern allows for a clean sonsistant structure when loading pokemon
+    2. A model can be safer due to its consistancy, JSON lacks this
+
+Checkpoint 8
+    1. 
+    2. 
