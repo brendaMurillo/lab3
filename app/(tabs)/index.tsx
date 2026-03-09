@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
 
 type PokemonResult = {
   name: string;
   image: string;
+  types: string[];
+  abilities: string[];
+  moves: string[];
 };
 
 export default function HomeScreen() {
@@ -16,13 +19,11 @@ export default function HomeScreen() {
   async function handleSearch() {
     const q = pokemonName.trim().toLowerCase();
 
-    // validate
     if (!q) {
       setError("Please enter a Pokémon name.");
       return;
     }
 
-    // start new search: reset state
     setLoading(true);
     setError("");
     setPokemon(null);
@@ -36,12 +37,34 @@ export default function HomeScreen() {
       }
 
       const data = await response.json();
-      console.log("Full JSON response:", data);
 
-      // minimal shaped object for checkpoint 2
+      const types =
+        Array.isArray(data?.types)
+          ? data.types
+              .map((t: any) => t?.type?.name)
+              .filter(Boolean)
+          : [];
+
+      const abilities =
+        Array.isArray(data?.abilities)
+          ? data.abilities
+              .map((a: any) => a?.ability?.name)
+              .filter(Boolean)
+          : [];
+
+      const movesAll =
+        Array.isArray(data?.moves)
+          ? data.moves
+              .map((m: any) => m?.move?.name)
+              .filter(Boolean)
+          : [];
+
       const result: PokemonResult = {
         name: data?.name ?? q,
         image: data?.sprites?.front_default ?? "",
+        types,
+        abilities,
+        moves: movesAll.slice(0, 5),
       };
 
       setPokemon(result);
@@ -73,9 +96,22 @@ export default function HomeScreen() {
       {!!error && <Text style={styles.error}>{error}</Text>}
 
       {pokemon && (
-        <Text style={styles.info}>
-          Loaded: {pokemon.name} {pokemon.image ? "✅" : ""}
-        </Text>
+        <View style={styles.card}>
+          <Text style={styles.pokeName}>{pokemon.name}</Text>
+
+          {!!pokemon.image && (
+            <Image source={{ uri: pokemon.image }} style={styles.sprite} />
+          )}
+
+          <Text style={styles.sectionTitle}>Types</Text>
+          <Text>{pokemon.types.join(", ") || "—"}</Text>
+
+          <Text style={styles.sectionTitle}>Abilities</Text>
+          <Text>{pokemon.abilities.join(", ") || "—"}</Text>
+
+          <Text style={styles.sectionTitle}>First 5 moves</Text>
+          <Text>{pokemon.moves.join(", ") || "—"}</Text>
+        </View>
       )}
     </View>
   );
@@ -108,5 +144,29 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: "crimson",
     fontWeight: "600",
+  },
+  card: {
+    marginTop: 14,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 12,
+    gap: 6,
+    alignItems: "center",
+  },
+  pokeName: {
+    fontSize: 20,
+    fontWeight: "700",
+    textTransform: "capitalize",
+  },
+  sprite: {
+    width: 140,
+    height: 140,
+  },
+  sectionTitle: {
+    marginTop: 6,
+    fontWeight: "700",
+    alignSelf: "flex-start",
   },
 });
