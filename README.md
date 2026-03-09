@@ -49,9 +49,9 @@ Checkpoint 10
     2. Derived state means that it can be calculated from favs
 
 Checkpoint 11
-    1. 
-    2. 
+    1. Its implemented this way because its differerant that state/ui and should be its own reusable item. 
+    2. Persistted state remains afer an app refresh, regular state doesnt do this
 
-Checkpoint 9
-    1. 
-    2. 
+Checkpoint 12
+    1. Animations are a part of UI so they should be handled in the view 
+    2. The animation is triggered in useEffect when pokemon changes, because that indicates new results were loaded and should animate in.

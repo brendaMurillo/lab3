@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Pokemon } from "../models/Pokemon";
 import { fetchPokemonByName } from "../services/pokemonApi";
+import { loadFavorites, saveFavorites } from "../services/favoritesStorage";
 
 export function usePokemonController() {
   const [pokemonName, setPokemonName] = useState("");
@@ -10,6 +11,19 @@ export function usePokemonController() {
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
 
   const [favorites, setFavorites] = useState<string[]>([]);
+
+  // Load favorites on startup
+  useEffect(() => {
+    (async () => {
+      const stored = await loadFavorites();
+      setFavorites(stored);
+    })();
+  }, []);
+
+  // Save favorites whenever favorites changes
+  useEffect(() => {
+    saveFavorites(favorites);
+  }, [favorites]);
 
   const isFavorite = useMemo(() => {
     const current = pokemon?.name?.toLowerCase();
@@ -32,7 +46,7 @@ export function usePokemonController() {
     try {
       const result = await fetchPokemonByName(q);
       setPokemon(result);
-      setPokemonName(result.name); // sync input with loaded pokemon
+      setPokemonName(result.name);
     } catch (e: any) {
       setError(e?.message ?? "Something went wrong");
     } finally {

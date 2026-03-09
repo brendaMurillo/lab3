@@ -30,32 +30,32 @@ export function PokemonView(props: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const spinAnim = useRef(new Animated.Value(0)).current;
 
-  const spin = useMemo(() => {
-    return spinAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-  }, [spinAnim]);
-
+ const spin = useMemo(() => {
+  return spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "720deg"], // 2 full rotations
+  });
+}, [spinAnim]);
   useEffect(() => {
-    if (!props.pokemon) return;
+  if (!props.pokemon) return;
 
-    fadeAnim.setValue(0);
-    spinAnim.setValue(0);
+  // reset so it replays every time a new pokemon is loaded
+  fadeAnim.setValue(0);
+  spinAnim.setValue(0);
 
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(spinAnim, {
-        toValue: 1,
-        duration: 700,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [props.pokemon, fadeAnim, spinAnim]);
+  Animated.parallel([
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }),
+    Animated.timing(spinAnim, {
+      toValue: 1,
+      duration: 900,
+      useNativeDriver: true,
+    }),
+  ]).start();
+}, [props.pokemon, fadeAnim, spinAnim]);
 
   return (
     <View style={styles.container}>
