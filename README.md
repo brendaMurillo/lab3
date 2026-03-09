@@ -15,5 +15,13 @@ Checkpoint 3
     2. The styles are responsible for UI, fetching is responsible for logic.
 
 Checkpoint 4
+    1. Index is responsible for:
+        1. input
+        2. fetching
+        3. display
+    2. I would fetch from a separate file and access it from that file 
+    3. Look over the code to ensure parsing isint isolated, and I would make sure the program runs normally
+
+Checkpoint 5
     1. 
     2. 
