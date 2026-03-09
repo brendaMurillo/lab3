@@ -1,36 +1,9 @@
-import { useState } from "react";
+import React from "react";
 import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
-import { fetchPokemonByName } from "../../services/pokemonApi";
-
-type PokemonResult = {
-  name: string;
-  image: string;
-  types: string[];
-  abilities: string[];
-  moves: string[];
-};
+import { usePokemonController } from "../../controllers/usePokemonController";
 
 export default function HomeScreen() {
-  const [pokemonName, setPokemonName] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [pokemon, setPokemon] = useState<PokemonResult | null>(null);
-
-  async function handleSearch() {
-    setLoading(true);
-    setError("");
-    setPokemon(null);
-
-    try {
-      const result = await fetchPokemonByName(pokemonName);
-      setPokemon(result);
-    } catch (e: any) {
-      setError(e?.message ?? "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const c = usePokemonController();
 
   return (
     <View style={styles.container}>
@@ -39,33 +12,33 @@ export default function HomeScreen() {
       <TextInput
         style={styles.input}
         placeholder="Enter Pokemon name (e.g., pikachu)"
-        value={pokemonName}
-        onChangeText={setPokemonName}
+        value={c.pokemonName}
+        onChangeText={c.setPokemonName}
         autoCapitalize="none"
         autoCorrect={false}
       />
 
-      <Button title="Get Pokemon" onPress={handleSearch} />
+      <Button title="Get Pokemon" onPress={c.searchByName} />
 
-      {loading && <Text style={styles.info}>Loading...</Text>}
-      {!!error && <Text style={styles.error}>{error}</Text>}
+      {c.loading && <Text style={styles.info}>Loading...</Text>}
+      {!!c.error && <Text style={styles.error}>{c.error}</Text>}
 
-      {pokemon && (
+      {c.pokemon && (
         <View style={styles.card}>
-          <Text style={styles.pokeName}>{pokemon.name}</Text>
+          <Text style={styles.pokeName}>{c.pokemon.name}</Text>
 
-          {!!pokemon.image && (
-            <Image source={{ uri: pokemon.image }} style={styles.sprite} />
+          {!!c.pokemon.image && (
+            <Image source={{ uri: c.pokemon.image }} style={styles.sprite} />
           )}
 
           <Text style={styles.sectionTitle}>Types</Text>
-          <Text>{pokemon.types.join(", ") || "—"}</Text>
+          <Text>{c.pokemon.types.join(", ") || "—"}</Text>
 
           <Text style={styles.sectionTitle}>Abilities</Text>
-          <Text>{pokemon.abilities.join(", ") || "—"}</Text>
+          <Text>{c.pokemon.abilities.join(", ") || "—"}</Text>
 
           <Text style={styles.sectionTitle}>First 5 moves</Text>
-          <Text>{pokemon.moves.join(", ") || "—"}</Text>
+          <Text>{c.pokemon.moves.join(", ") || "—"}</Text>
         </View>
       )}
     </View>

@@ -37,5 +37,5 @@ Checkpoint 7
     2. A model can be safer due to its consistancy, JSON lacks this
 
 Checkpoint 8
-    1. 
-    2. 
+    1. The controller validates the input and then calls and loads the pokemon. 
+    2. The view should only focus on UI
