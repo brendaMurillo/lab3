@@ -16,7 +16,7 @@ export default function HomeScreen() {
     try {
       // Call PokéAPI
       const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${q}`
+        `https://pokeapi.co/api/v2/pokemon/{name}`
       );
 
       // fetch does NOT throw on 404 — we must check manually
