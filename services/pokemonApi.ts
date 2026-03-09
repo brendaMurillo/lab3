@@ -1,4 +1,3 @@
-// services/pokemonApi.ts
 import type { Pokemon } from "../models/Pokemon";
 import { PokemonBuilder } from "../models/PokemonBuilder";
 
@@ -29,13 +28,11 @@ export async function fetchPokemonByName(nameRaw: string): Promise<Pokemon> {
     ? data.moves.map((m: any) => m?.move?.name).filter(Boolean)
     : [];
 
-  const pokemon = new PokemonBuilder()
+  return new PokemonBuilder()
     .setName(data?.name ?? name)
     .setImage(data?.sprites?.front_default ?? "")
     .setTypes(types)
     .setAbilities(abilities)
     .setMoves(movesAll.slice(0, 5))
     .build();
-
-  return pokemon;
 }

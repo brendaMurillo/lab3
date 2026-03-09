@@ -1,4 +1,3 @@
-// models/PokemonBuilder.ts
 import type { Pokemon } from "./Pokemon";
 
 export class PokemonBuilder {

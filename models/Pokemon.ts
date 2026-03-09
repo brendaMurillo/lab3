@@ -1,4 +1,3 @@
-// models/Pokemon.ts
 export type Pokemon = {
   name: string;
   image: string;

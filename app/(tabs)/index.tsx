@@ -9,10 +9,14 @@ export default function HomeScreen() {
     <PokemonView
       pokemonName={c.pokemonName}
       onChangePokemonName={c.setPokemonName}
-      onSearch={c.searchByName}
+      onSearch={() => c.searchByName()}
       loading={c.loading}
       error={c.error}
       pokemon={c.pokemon}
+      favorites={c.favorites}
+      isFavorite={c.isFavorite}
+      onToggleFavorite={c.toggleFavorite}
+      onLoadFavorite={c.loadFavorite}
     />
   );
 }

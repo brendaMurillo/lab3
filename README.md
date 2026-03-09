@@ -45,8 +45,8 @@ Checkpoint 9
     2. It would mix UI and business logic, making the view harder to reuse
 
 Checkpoint 10
-    1. 
-    2. 
+    1. Favorites are in controller since its an app state, not part of ui
+    2. Derived state means that it can be calculated from favs
 
 Checkpoint 11
     1. 

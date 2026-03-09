@@ -3,6 +3,7 @@ import {
   Animated,
   Button,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -18,6 +19,11 @@ type Props = {
   loading: boolean;
   error: string;
   pokemon: Pokemon | null;
+
+  favorites: string[];
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  onLoadFavorite: (name: string) => void;
 };
 
 export function PokemonView(props: Props) {
@@ -31,7 +37,6 @@ export function PokemonView(props: Props) {
     });
   }, [spinAnim]);
 
-  // UI-only animation: replay when pokemon changes from null -> real pokemon
   useEffect(() => {
     if (!props.pokemon) return;
 
@@ -71,28 +76,53 @@ export function PokemonView(props: Props) {
       {!!props.error && <Text style={styles.error}>{props.error}</Text>}
 
       {props.pokemon && (
-        <Animated.View
-          style={[
-            styles.card,
-            { opacity: fadeAnim, transform: [{ rotate: spin }] },
-          ]}
-        >
-          <Text style={styles.pokeName}>{props.pokemon.name}</Text>
+        <View style={styles.section}>
+          <Button
+            title={props.isFavorite ? "Unfavorite" : "Favorite"}
+            onPress={props.onToggleFavorite}
+          />
 
-          {!!props.pokemon.image && (
-            <Image source={{ uri: props.pokemon.image }} style={styles.sprite} />
-          )}
+          <Animated.View
+            style={[
+              styles.card,
+              { opacity: fadeAnim, transform: [{ rotate: spin }] },
+            ]}
+          >
+            <Text style={styles.pokeName}>{props.pokemon.name}</Text>
 
-          <Text style={styles.sectionTitle}>Types</Text>
-          <Text>{props.pokemon.types.join(", ") || "—"}</Text>
+            {!!props.pokemon.image && (
+              <Image source={{ uri: props.pokemon.image }} style={styles.sprite} />
+            )}
 
-          <Text style={styles.sectionTitle}>Abilities</Text>
-          <Text>{props.pokemon.abilities.join(", ") || "—"}</Text>
+            <Text style={styles.sectionTitle}>Types</Text>
+            <Text>{props.pokemon.types.join(", ") || "—"}</Text>
 
-          <Text style={styles.sectionTitle}>First 5 moves</Text>
-          <Text>{props.pokemon.moves.join(", ") || "—"}</Text>
-        </Animated.View>
+            <Text style={styles.sectionTitle}>Abilities</Text>
+            <Text>{props.pokemon.abilities.join(", ") || "—"}</Text>
+
+            <Text style={styles.sectionTitle}>First 5 moves</Text>
+            <Text>{props.pokemon.moves.join(", ") || "—"}</Text>
+          </Animated.View>
+        </View>
       )}
+
+      <View style={styles.favs}>
+        <Text style={styles.favsTitle}>Favorites</Text>
+
+        {props.favorites.length === 0 ? (
+          <Text style={styles.info}>No favorites yet.</Text>
+        ) : (
+          props.favorites.map((name) => (
+            <Pressable
+              key={name}
+              onPress={() => props.onLoadFavorite(name)}
+              style={styles.favItem}
+            >
+              <Text style={styles.favText}>{name}</Text>
+            </Pressable>
+          ))
+        )}
+      </View>
     </View>
   );
 }
@@ -118,15 +148,18 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   info: {
-    marginTop: 8,
+    marginTop: 6,
   },
   error: {
-    marginTop: 8,
+    marginTop: 6,
     color: "crimson",
     fontWeight: "600",
   },
+  section: {
+    width: "100%",
+    gap: 10,
+  },
   card: {
-    marginTop: 14,
     width: "100%",
     borderWidth: 1,
     borderColor: "#ddd",
@@ -148,5 +181,24 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: "700",
     alignSelf: "flex-start",
+  },
+  favs: {
+    width: "100%",
+    marginTop: 10,
+    gap: 6,
+  },
+  favsTitle: {
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  favItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+  },
+  favText: {
+    textTransform: "capitalize",
   },
 });
